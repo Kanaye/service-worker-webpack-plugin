@@ -1,6 +1,6 @@
 {
   "name": "service-worker-webpack-plugin",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "A tiny webpack-plugin making writing your own service worker (e.g. with workbox)",
   "main": "sindex.js",
   "scripts": {
