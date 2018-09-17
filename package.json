@@ -23,5 +23,8 @@
   "homepage": "https://github.com/Kanaye/service-worker-webpack-plugin#readme",
   "dependencies": {
     "webpack-virtual-modules": "^0.1.10"
+  },
+  "peerDependencies": {
+    "webpack": "^^4.0.0"
   }
 }
