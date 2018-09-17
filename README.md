@@ -11,7 +11,7 @@ This plugin uses [webpack-virutal-modules](https://github.com/sysgears/webpack-v
 
 ## Installation
 ```bash
-$ npm i -D service-worker-webpack-plugin
+$ npm i -D @kanaye/service-worker-webpack-plugin
 ```
 ## Usage
 *Note*: in this usage examples I am using googles [workbox-preacaching](https://www.npmjs.com/package/workbox-precaching).
@@ -27,7 +27,7 @@ There are currently two ways to use this plugin:
 ### Verison 1: Inline manifest
 **webpack.config.js**
 ```js
-const ServiceWorkerPlugin = require('service-worker-webpack-plugin');
+const ServiceWorkerPlugin = require('@kanaye/service-worker-webpack-plugin');
 module.exports = {
     entry: './src/index.js',
     output: {
@@ -69,7 +69,7 @@ This will generate `bundle.js` and `sw.js`  within the `dist` folder and cache a
 ### Version 2: External manifest
 **webpack.config.js**
 ```js
-const ServiceWorkerPlugin = require('service-worker-webpack-plugin');
+const ServiceWorkerPlugin = require('@kanaye/service-worker-webpack-plugin');
 module.exports = {
     entry: './src/index.js',
     output: {
