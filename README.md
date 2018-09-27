@@ -93,19 +93,55 @@ module.exports = {
 
 **src/serviceWorker.js**
 ```js
-import workboxPrecaching from 'workbox-precaching';
+// the default implementation of workbox-precaching doesn't support async init.
+import { PrecacheController } from 'workbox-precaching';
 // import the manifests path from the virtual module
 import manifestPath from '#serviceworker-virtual-manifest';
+const CACHE_NAME = 'asset-precache';
 
+const cache = new PrecacheController(CACHE_NAME);
+// you need to install the PrecacheController within the install event.
+self.addEventListener('install', (e) => {
+  e.waitUntil(cache.install({}));
+});
+
+// activate the controller once the ServiceWorker get 's activated.
+self.addEventListener('activate', (e) => {
+  e.waitUntil(cache.activate());  
+});
+
+// workbox-precaching does a lot of "magic" for responding with the right resource
+// this example is a *very* naive implementation.
+// For the implementation used in workbox-precachings default export 
+// at the time of writing this (version 3.6.1) , see here:
+// https://github.com/GoogleChrome/workbox/blob/361246146e5ebe38e2376ff32403dcd9e0934a02/packages/workbox-precaching/_default.mjs#L208-L258
+
+self.addEventListener('fetch', (e) => {
+  // let uncached resources fall through to the network.
+  if (cache.getCachedUrl().indexOf(e.url)) return;
+  e.respondWith(
+    caches.open(CACHE_NAME)
+      .then(c => c.match(target))
+    )
+  );
+});
+
+function precache(assets) {
+  cache.addToCacheList(assets);
+}
+
+// if you want to make sure, your ServiceWorker is only active *after*
+// you fetched the resources you can move this into the 'activate'-Event 
+// contained within an <event>.waitUntil(<Promise of this precache>)-call.
 fetch(manifestPath)
   .then(res => res.json())
-  .then(resources => workboxPrecaching.precacheAndRoute(resources));
+  .then(precache);
   
 // OR: service-worker-webpack-plugin also includes a helper function that fetches the generated manifest for you.
 import loadManifest from 'service-worker-webpack-plugin/load-manifest';
 
 loadManifest()
-  .then(resources => workboxPrecaching.precacheAndRoute(resources));
+  .then(precache);
 ```
 
 This will generate a new file called `cache-manifest.json` in your `dist` folder.
